@@ -539,4 +539,121 @@ function atualizarConfiguracoes() {
                     </div>
                     <div class="list-item-actions">
                         <button class="btn-edit" onclick="editarUsuario('${u.id}')">✏️</button>
-                        <button cla
+                        <button class="btn-delete" onclick="excluirUsuario('${u.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('') +
+        '</div>';
+    }
+}
+
+// ========== FUNÇÕES DE EDIÇÃO E EXCLUSÃO ==========
+
+function editarCategoria(id) {
+    const cat = dados.categorias.find(c => c.id === id);
+    if (!cat) return;
+    
+    openModal('categoria');
+    document.getElementById('catNome').value = cat.nome;
+    document.getElementById('catIcone').value = cat.icone;
+    document.getElementById('catCor').value = cat.cor;
+    document.getElementById('catTipo').value = cat.tipo;
+    
+    // Remove a antiga para ser substituída pela nova ao salvar
+    dados.categorias = dados.categorias.filter(c => c.id !== id);
+}
+
+function excluirCategoria(id) {
+    if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+        dados.categorias = dados.categorias.filter(c => c.id !== id);
+        salvarDados();
+        atualizarTudo();
+    }
+}
+
+function editarLancamento(id) {
+    const lanc = dados.lancamentos.find(l => l.id === id);
+    if (!lanc) return;
+    
+    openModal('lancamento');
+    document.getElementById('lancData').value = lanc.data;
+    document.getElementById('lancTipo').value = lanc.tipo;
+    atualizarCategoriasPorTipo(); // Atualiza as opções do select
+    document.getElementById('lancCategoria').value = lanc.categoria;
+    document.getElementById('lancDescricao').value = lanc.descricao || '';
+    document.getElementById('lancValor').value = lanc.valor;
+    document.getElementById('lancUsuario').value = lanc.usuario;
+    
+    // Remove o antigo para ser substituído pelo novo ao salvar
+    dados.lancamentos = dados.lancamentos.filter(l => l.id !== id);
+}
+
+function excluirLancamento(id) {
+    if (confirm('Tem certeza que deseja excluir este lançamento?')) {
+        dados.lancamentos = dados.lancamentos.filter(l => l.id !== id);
+        salvarDados();
+        atualizarTudo();
+    }
+}
+
+function editarMeta(id) {
+    const meta = dados.metas.find(m => m.id === id);
+    if (!meta) return;
+    
+    openModal('meta');
+    document.getElementById('metaNome').value = meta.nome;
+    document.getElementById('metaValor').value = meta.valorMeta;
+    document.getElementById('metaValorAtual').value = meta.valorAtual;
+    
+    dados.metas = dados.metas.filter(m => m.id !== id);
+}
+
+function excluirMeta(id) {
+    if (confirm('Tem certeza que deseja excluir esta meta?')) {
+        dados.metas = dados.metas.filter(m => m.id !== id);
+        salvarDados();
+        atualizarTudo();
+    }
+}
+
+function editarUsuario(id) {
+    const user = dados.usuarios.find(u => u.id === id);
+    if (!user) return;
+    
+    openModal('usuario');
+    document.getElementById('userNome').value = user.nome;
+    document.getElementById('userEmail').value = user.email || '';
+    
+    dados.usuarios = dados.usuarios.filter(u => u.id !== id);
+}
+
+function excluirUsuario(id) {
+    if (confirm('Tem certeza que deseja excluir este usuário?')) {
+        dados.usuarios = dados.usuarios.filter(u => u.id !== id);
+        salvarDados();
+        atualizarTudo();
+    }
+}
+
+function filterLancamentos() {
+    atualizarLancamentos();
+}
+
+// ========== UTILITÁRIOS ==========
+
+function formatarMoeda(valor) {
+    return 'R$ ' + valor.toFixed(2).replace('.', ',');
+}
+
+function formatarData(data) {
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
+// Fechar modal ao clicar fora dele
+window.onclick = function(event) {
+    const modal = document.getElementById('modal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
